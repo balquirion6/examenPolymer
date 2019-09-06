@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../examen-login.html">
+<link rel="import" href="../../detalle-producto.html">
 <script src="../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 <dom-module id="examen-app">
   <template>
@@ -14,6 +15,12 @@
             <examen-login on-login-request-success="loginSuccess" on-login-request-error="loginError"></examen-login>
             <h2 style=""> [[prop1]]</h2>
           
+        </paper-dialog>
+
+        <paper-dialog id="dialog" opened="{{logueado}}">
+          
+          <detalle-producto tsec="f6db79c083147efae21ce10daa79d665fea0265f"></detalle-producto>
+
         </paper-dialog>
         
         

@@ -1,5 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="./bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="./bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 
 <dom-module id="detalle-producto">
     <template>
@@ -8,20 +10,102 @@
                 display: block
             }
         </style>
+
+        <h1>sd;lkjsdk</h1>
         <iron-ajax
-            id="consultaProductos"
-            headers="[[headers]]"
-            url="https://artichoke.platform.bbva.com/cards/v0/cards"
-            handle-as="json"
-            last-response="{{data}}"
-            loading="{{loading}}"
-	></iron-ajax>
+		id="consultaProductos"
+	    url="https://artichoke.platform.bbva.com/cards/v0/cards"
+       handle-as="json"
+       headers="[[headers]]" 
+	   last-response="{{data}}"
+       loading="{{loading}}"
+       on-response="manipulate"
+       auto
+    ></iron-ajax>
+
+    <template is="dom-if" if="{{loading}}">
+            <paper-spinner active></paper-spinner>
+          </template>	
+          <template is="dom-repeat" if="{{!loading}}" items="[[data]]" as="card">
+    	
+                <paper-card width="200px" height="500px" 
+                    >
+
+                    {{card}}
+
+                    se muestra
+              
+              </paper-card>	
+        
+            </template>
+
+
+
     
-        <paper-card>
+    {
+        "cardId": "0005",
+        "number": "4924 6870 8307 0005",
+        "numberType": {
+            "id": "PAN",
+            "name": "Permanent Account Number"
+        },
+        "cardType": {
+            "id": "DEBIT_CARD",
+            "name": "Tarjeta de débito"
+        },
+        "title": {
+            "id": "DEBIT_CO",
+            "name": "Ahora BBVA"
+        },
+        "alias": "Tarjeta 0005",
+        "cutOffDate": "2017-12-09T12:00:00Z",
+        "brandAssociation": {
+            "id": "VISA",
+            "name": "VISA"
+        },
+        "physicalSupport": {
+            "id": "NORMAL_PLASTIC",
+            "name": "Plástico normal"
+        },
+        "expirationDate": "2017-10-09",
+        "holderName": "Antonio Garcia",
+        "availableBalance": {
+            "currentBalances": [{
+                "amount": 24214,
+                "currency": "COP"
+            }],
+            "postedBalances": [{
+                "amount": 60000,
+                "currency": "COP"
+            }],
+            "pendingBalances": [{
+                "amount": 0,
+                "currency": "COP"
+            }]
+        },
+        "status": {
+            "id": "OPERATIVE",
+            "name": "Operative card"
+        },
+        "images": [{
+                "id": "FRONT_CARD",
+                "name": "Front face of the card",
+                "url": "https://openapi.bbva.com/ccds/covers?pg=0T00000223&bin=492468&default_image=true&v=4&width=303&height=192&country=co&app_id=com.bbva.wallet&issue_date=20160201"
+            },
+            {
+                "id": "BACK_CARD",
+                "name": "Back face of the card",
+                "url": "/imageBack.jpg"
+            }
+        ]
+    }
+    number
 
+	cardType.name
 
-        </paper-card>
+	images[].url -> images[].id = ‘FRONT_CARD’
 
+	availableBalance.currentBalances[].amount
     </template>
 
     <script>
@@ -46,7 +130,14 @@
              */
             static get properties() {
                 return {
-                    tsec={type:String}
+                    tsec:{
+                        type:String,
+                        value:""
+                    },
+                    headers: {
+                        computed: '_computeHeader(tsec)'
+                    }
+                    
                 };
             }
 
@@ -56,7 +147,7 @@
              * @constructor
              */
             constructor() {
-                super();
+                super();  
             }
 
             /**
@@ -69,8 +160,11 @@
                     
                 });
             }
-            _computeHeader: function(_tsec) {
-                return {tsec: _tsec};
+            _computeHeader(token) {
+                return {tsec:  token};
+            }
+            manipulate(e){
+                console.log(e.detail);
             }
 
         }
