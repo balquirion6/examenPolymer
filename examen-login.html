@@ -1,0 +1,163 @@
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+<link rel="import" href="./bower_components/paper-card/paper-card.html">
+<link rel="import" href="./bower_components/paper-button/paper-button.html">
+<link rel="import" href="./bower_components/paper-input/paper-input.html">
+<link rel="import" href="./bower_components/iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+
+<dom-module id="examen-login">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+
+            .login {
+                width: 400px;
+                background-color: white
+            }
+        </style>
+        
+        <iron-ajax
+            id="doLogin"
+            url="https://artichoke.platform.bbva.com/TechArchitecture/co/grantingTicket/V02"
+            handle-as="json"
+            body="[[body]]"
+            handle-as="json"
+            content-type="application/json"
+            method="POST"
+            last-response="{{data}}"
+            loading="{{loading}}"
+            on-response="saveUserCredentials"
+            on-error="notifyError"
+        ></iron-ajax>
+        <template is="dom-if" if="{{loading}}">
+                <paper-spinner active></paper-spinner>
+          </template>
+        <paper-card class="login">
+            <span>Usuario</span>
+            <paper-input value="{{usuario}}"></paper-input>
+            <span>Password</span>
+            <paper-input value="{{password}}"></paper-input>
+            <paper-button on-click="loginRequest">aceptar</paper-button>
+            
+        </paper-card>
+        
+
+    </template>
+
+    <script>
+        /**
+         * `examen-login` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class ExamenLogin extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'examen-login';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    usuario: {
+                        type: String,
+                        value: 'CEDULA_CIUDADANIA0031223377a'
+                    },
+                    password : {
+                        type:String,
+                        value:'88888888'
+                    },
+                    body:{
+                        type:Object,
+                        value:{}
+                    }
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                    
+                });
+            }
+            loginRequest(){
+               this.body = {
+
+                    "authentication": {
+
+                        "userID": this.usuario,
+
+                        "consumerID": "10000033",
+
+                        "authenticationType": "02",
+
+                        "authenticationData": [{
+
+                            "idAuthenticationData": "password",
+
+                            "authenticationData": [this.password]
+
+                        }]
+
+                    },
+
+                    "backendUserRequest": {
+
+                        "userId": "",
+
+                        "accessCode": this.usuario,
+
+                        "dialogId": ""
+
+                    }
+
+                }
+                console.log(this.body);
+                this.$.doLogin.generateRequest();
+            }
+            saveUserCredentials(e, request) {
+                let headers = request.xhr.getAllResponseHeaders();
+                let tsec = headers.split("\n")[1].split(':')[1];//se obtiene el tsec de la cabecera
+                console.log('headers', tsec);
+                this.dispatchEvent(new CustomEvent('login-request-success', {
+                                                                        detail: {
+                                                                            tsec: tsec
+                                                                        }
+                                                                        }))
+            }
+            notifyError(){
+                this.dispatchEvent(new CustomEvent('login-request-error', {
+                                                                        detail: {
+                                                                            
+                                                                        }
+                                                                        }))
+            }
+
+        }
+
+        window.customElements.define(ExamenLogin.is, ExamenLogin);
+    </script>
+</dom-module>

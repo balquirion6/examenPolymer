@@ -1,0 +1,80 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="./bower_components/paper-card/paper-card.html">
+
+<dom-module id="detalle-producto">
+    <template>
+        <style>
+            :host {
+                display: block
+            }
+        </style>
+        <iron-ajax
+            id="consultaProductos"
+            headers="[[headers]]"
+            url="https://artichoke.platform.bbva.com/cards/v0/cards"
+            handle-as="json"
+            last-response="{{data}}"
+            loading="{{loading}}"
+	></iron-ajax>
+    
+        <paper-card>
+
+
+        </paper-card>
+
+    </template>
+
+    <script>
+        /**
+         * `detalle-producto` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class DetalleProducto extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'detalle-producto';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    tsec={type:String}
+                };
+            }
+
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+
+                Polymer.RenderStatus.afterNextRender(this, function() {
+                    
+                });
+            }
+            _computeHeader: function(_tsec) {
+                return {tsec: _tsec};
+            }
+
+        }
+
+        window.customElements.define(DetalleProducto.is, DetalleProducto);
+    </script>
+</dom-module>

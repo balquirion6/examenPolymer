@@ -1,0 +1,58 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../examen-login.html">
+<script src="../../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+<dom-module id="examen-app">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style> 
+        <paper-dialog id="dialog" opened="{{!logueado}}">
+            <examen-login on-login-request-success="loginSuccess" on-login-request-error="loginError"></examen-login>
+            <h2 style=""> [[prop1]]</h2>
+          
+        </paper-dialog>
+        
+        
+  </template>
+      
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class ExamenApp extends Polymer.Element {
+      static get is() { return 'examen-app'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: ''
+          },
+          tsec: {
+            type: String,
+            value: ''
+          },
+          logueado:{
+            type:Boolean,
+            value:false
+          }
+        };
+      }
+      loginSuccess(e){
+        this.tsec = e.detail.tsec;
+        this.logueado = true;
+      }
+      loginError(){
+        this.tsec = "";
+        this.prop1 = " Datos incorrectos ";
+      }
+    }
+
+    window.customElements.define(ExamenApp.is, ExamenApp);
+  </script>
+</dom-module>
