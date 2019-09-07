@@ -1,96 +1,109 @@
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="./bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
-<link rel="import" href="./detalle-producto.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html" />
+<link rel="import" href="./bower_components/iron-ajax/iron-ajax.html" />
+<link
+  rel="import"
+  href="../../bower_components/paper-spinner/paper-spinner.html"
+/>
+<link rel="import" href="./detalle-producto.html" />
 
 <dom-module id="listado-productos">
-    <template>
-        <style>
-            :host {
-                display: block
-            }
-        </style>
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .container {
+        width: 85%;
+        max-width: 740px;
+        margin: 0 auto;
+        margin-top: 1em;
+        display: inline;
+      }
+    </style>
+    <div class="container">
+      <iron-ajax
+        id="consultaProductos"
+        url="https://artichoke.platform.bbva.com/cards/v0/cards"
+        handle-as="json"
+        headers="[[headers]]"
+        last-response="{{ data }}"
+        loading="{{ loading }}"
+        auto
+      ></iron-ajax>
 
-<iron-ajax
-id="consultaProductos"
-url="https://artichoke.platform.bbva.com/cards/v0/cards"
-handle-as="json"
-headers="[[headers]]" 
-last-response="{{data}}"
-loading="{{loading}}"
-auto
-></iron-ajax>
+      <template is="dom-if" if="{{ loading }}">
+        <paper-spinner active></paper-spinner>
+      </template>
+      <template
+        is="dom-repeat"
+        if="{{ !loading }}"
+        items="[[data.data]]"
+        as="card"
+      >
+        <detalle-producto
+          img="[[card.images.0.url]]"
+          balance="[[card.availableBalance.currentBalances.0.amount]]"
+          number="[[card.number]]"
+          name="[[card.cardType.name]]"
+        ></detalle-producto>
+      </template>
+    </div>
+  </template>
 
-<template is="dom-if" if="{{loading}}">
-    <paper-spinner active></paper-spinner>
-</template>
-<template is="dom-repeat" if="{{!loading}}" items="[[data.data]]" as="card">
-<detalle-producto img="[[card.images.0.url]]" 
-balance="[[card.availableBalance.currentBalances.0.amount]]"
-number="[[card.number]]"></detalle-producto>
+  <script>
+    /**
+     * `listado-productos` Description
+     *
+     * @summary ShortDescription.
+     * @customElement
+     * @polymer
+     * @extends {Polymer.Element}
+     */
+    class ListadoProductos extends Polymer.Element {
+      /**
+       * String providing the tag name to register the element under.
+       */
+      static get is() {
+        return "listado-productos";
+      }
 
-</template>
+      /**
+       * Object describing property-related metadata used by Polymer features
+       */
+      static get properties() {
+        return {
+          tsec: {
+            type: String,
+            value: ""
+          },
+          headers: {
+            computed: "_computeHeader(tsec)"
+          }
+        };
+      }
 
-    </template>
+      /**
+       * Instance of the element is created/upgraded. Use: initializing state,
+       * set up event listeners, create shadow dom.
+       * @constructor
+       */
+      constructor() {
+        super();
+      }
 
-    <script>
-        /**
-         * `listado-productos` Description
-         *
-         * @summary ShortDescription.
-         * @customElement
-         * @polymer
-         * @extends {Polymer.Element}
-         */
-        class ListadoProductos extends Polymer.Element {
-            /**
-             * String providing the tag name to register the element under.
-             */
-            static get is() {
-                return 'listado-productos';
-            }
+      /**
+       * Use for one-time configuration of your component after local DOM is initialized.
+       */
+      ready() {
+        super.ready();
 
-            /**
-             * Object describing property-related metadata used by Polymer features
-             */
-            static get properties() {
-                return {
-                    
-                    tsec:{
-                        type:String,
-                        value:""
-                    },
-                    headers: {
-                        computed: '_computeHeader(tsec)'
-                    }
-                };
-            }
+        Polymer.RenderStatus.afterNextRender(this, function() {});
+      }
+      _computeHeader(token) {
+        return { tsec: token };
+      }
+    }
 
-            /**
-             * Instance of the element is created/upgraded. Use: initializing state,
-             * set up event listeners, create shadow dom.
-             * @constructor
-             */
-            constructor() {
-                super();
-            }
-
-            /**
-             * Use for one-time configuration of your component after local DOM is initialized. 
-             */
-            ready() {
-                super.ready();
-
-                Polymer.RenderStatus.afterNextRender(this, function() {
-                    
-                });
-            }
-            _computeHeader(token) {
-                return {tsec:  token};
-            }
-
-        }
-
-        window.customElements.define(ListadoProductos.is, ListadoProductos);
-    </script>
+    window.customElements.define(ListadoProductos.is, ListadoProductos);
+  </script>
 </dom-module>

@@ -8,12 +8,22 @@
             :host {
                 display: block
             }
+            paper-card {
+		--paper-card-header-color: darkcyan;
+		--paper-card-background-color: lightcyan;
+		margin: 0.2em;
+		width: 300px;
+		height: 300px
+	}
+
         </style>
 
     	
-        <paper-card image="[[img]]" width="50px">
-               [[number]]
-               [[balance]]
+        <paper-card image="[[img]]">
+            <p><span>numero:</span>[[number]]</p>
+            <p><span>saldo disponible:</span> [[balance]]</p> 
+            <p><span>Nombre:</span> [[name]]</p> 
+              
         </paper-card>	
         
     </template>
@@ -54,7 +64,8 @@
                     },
                     number:{
                         type:String
-                    }
+                    },
+                    name:{type:String}
                     
                 };
             }

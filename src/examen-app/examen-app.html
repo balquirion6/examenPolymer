@@ -17,11 +17,11 @@
           
         </paper-dialog>
 
-        <paper-dialog id="dialog" opened="{{logueado}}">
+        <template is="dom-if" if="{{logueado}}">
           
           <listado-productos tsec="f6db79c083147efae21ce10daa79d665fea0265f"></listado-productos>
 
-        </paper-dialog>
+        </template>
         
         
   </template>
