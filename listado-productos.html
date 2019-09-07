@@ -1,8 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="./bower_components/paper-card/paper-card.html">
+<link rel="import" href="./bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="./detalle-producto.html">
 
-<dom-module id="detalle-producto">
+<dom-module id="listado-productos">
     <template>
         <style>
             :host {
@@ -10,35 +11,43 @@
             }
         </style>
 
-    	
-        <paper-card image="[[img]]" width="50px">
-               [[number]]
-               [[balance]]
-        </paper-card>	
-        
-    </template>
+<iron-ajax
+id="consultaProductos"
+url="https://artichoke.platform.bbva.com/cards/v0/cards"
+handle-as="json"
+headers="[[headers]]" 
+last-response="{{data}}"
+loading="{{loading}}"
+auto
+></iron-ajax>
 
+<template is="dom-if" if="{{loading}}">
+    <paper-spinner active></paper-spinner>
+</template>
+<template is="dom-repeat" if="{{!loading}}" items="[[data.data]]" as="card">
+<detalle-producto img="[[card.images.0.url]]" 
+balance="[[card.availableBalance.currentBalances.0.amount]]"
+number="[[card.number]]"></detalle-producto>
 
+</template>
 
-    
-    
     </template>
 
     <script>
         /**
-         * `detalle-producto` Description
+         * `listado-productos` Description
          *
          * @summary ShortDescription.
          * @customElement
          * @polymer
          * @extends {Polymer.Element}
          */
-        class DetalleProducto extends Polymer.Element {
+        class ListadoProductos extends Polymer.Element {
             /**
              * String providing the tag name to register the element under.
              */
             static get is() {
-                return 'detalle-producto';
+                return 'listado-productos';
             }
 
             /**
@@ -46,16 +55,14 @@
              */
             static get properties() {
                 return {
-                    img:{
-                        type:String
-                    },
-                    balance:{
-                        type:Number
-                    },
-                    number:{
-                        type:String
-                    }
                     
+                    tsec:{
+                        type:String,
+                        value:""
+                    },
+                    headers: {
+                        computed: '_computeHeader(tsec)'
+                    }
                 };
             }
 
@@ -65,7 +72,7 @@
              * @constructor
              */
             constructor() {
-                super();  
+                super();
             }
 
             /**
@@ -78,10 +85,12 @@
                     
                 });
             }
-            
+            _computeHeader(token) {
+                return {tsec:  token};
+            }
 
         }
 
-        window.customElements.define(DetalleProducto.is, DetalleProducto);
+        window.customElements.define(ListadoProductos.is, ListadoProductos);
     </script>
 </dom-module>
